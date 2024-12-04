@@ -1,9 +1,17 @@
 import axios from "axios";
-import { TomTomParams, TomTomResultObject } from "./interfaces/tomtom";
+import { TomTomParams } from "./interfaces/tomtom";
 import { Place } from "./interfaces/place";
-import { buildParams } from "./helpers";
+import { buildParams, buildAutocompletions } from "./helpers";
 
-// https://developer.tomtom.com/search-api/documentation/search-service/fuzzy-search
+/**
+ * Creates list of autocompletions based on the partial address. It uses TomTom API:
+ * https://developer.tomtom.com/search-api/documentation/search-service/fuzzy-search
+ *
+ * @param {string} key TomTom API key.
+ * @param {string} address Address we're trying to generate autocompletions for.
+ * @param {string} countrySet Comma separated values of a countries we're limiting our search for.
+ * @return {Promise<Place[]>} Promise with array of autocompletion suggestions
+ */
 export async function getPlaceAutocomplete(
   key: string | undefined,
   address: string,
@@ -17,28 +25,5 @@ export async function getPlaceAutocomplete(
     }
   );
 
-  return autocomplete.data.results.map(
-    ({
-      id,
-      address: {
-        streetName,
-        streetNumber,
-        municipality,
-        countryCode,
-        country,
-        freeformAddress,
-      },
-      position: { lat, lon },
-    }: TomTomResultObject) => ({
-      placeId: id,
-      placeLattitude: lat,
-      placeLongitude: lon,
-      streetName,
-      streetNumber,
-      municipality,
-      countryCode,
-      country,
-      freeformAddress,
-    })
-  );
+  return await buildAutocompletions(autocomplete.data.results);
 }

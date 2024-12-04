@@ -1,19 +1,40 @@
 import { getPlaceAutocomplete } from "./maps-api";
 import { getEnvVars } from "./vars";
+import { buildCompletionAnswer } from "./helpers";
 import { Place } from "./interfaces/place";
 import { EnvVars } from "./interfaces/envs";
+import { AutocompleteAnswer } from "./interfaces/autocomplete";
 
+/**
+ * Creates a new Circle from a diameter.
+ *
+ * @param {string} address Address we're trying to generate autocompletions for.
+ * @return {Promise<Place[]>} Promise with array of autocompletion suggestions
+ */
 export async function getAutoCompleteDetails(
   address: string
-): Promise<Place[]> {
-  const { apiKey, countrySet }: EnvVars = getEnvVars();
+): Promise<AutocompleteAnswer> {
+  let autocompleteAns: AutocompleteAnswer;
 
-  // get autocomplete results
-  const autocompleteResults: Place[] = await getPlaceAutocomplete(
-    apiKey,
-    address,
-    countrySet
-  );
-
-  return autocompleteResults;
+  try {
+    const { apiKey, countrySet }: EnvVars = getEnvVars();
+    // get autocomplete results
+    const autocompleteResults: Place[] = await getPlaceAutocomplete(
+      apiKey,
+      address,
+      countrySet
+    );
+    return buildCompletionAnswer(
+      "Successful",
+      autocompleteResults,
+      "No errors"
+    );
+  } catch (err: any) {
+    autocompleteAns = {
+      status: "Failed",
+      message: err.message,
+      autocompletions: [],
+    };
+    return buildCompletionAnswer("Failed", [], err.message);
+  }
 }
