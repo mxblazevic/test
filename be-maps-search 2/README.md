@@ -13,7 +13,10 @@ To take a partial address input and return full address suggestions along with t
 # Resources:
 
 Place Search Documentation: https://developer.tomtom.com/search-api/documentation/search-service/search-service
-API Key: Oyb0npJAVdRwDauqpFez7zKCy2euUYql
+
+# Setup
+
+You need to put API Key in .env file. For security reasons, I ommited it here in repo.
 
 # Install:
 
