@@ -14,8 +14,6 @@ import { AutocompleteAnswer } from "./interfaces/autocomplete";
 export async function getAutoCompleteDetails(
   address: string
 ): Promise<AutocompleteAnswer> {
-  let autocompleteAns: AutocompleteAnswer;
-
   try {
     const { apiKey, countrySet }: EnvVars = getEnvVars();
     // get autocomplete results
@@ -30,11 +28,6 @@ export async function getAutoCompleteDetails(
       "No errors"
     );
   } catch (err: any) {
-    autocompleteAns = {
-      status: "Failed",
-      message: err.message,
-      autocompletions: [],
-    };
     return buildCompletionAnswer("Failed", [], err.message);
   }
 }
